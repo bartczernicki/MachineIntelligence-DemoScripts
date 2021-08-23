@@ -1,8 +1,11 @@
-# 1) Install PyTorch
+
+## SETUP
+# 1) Install PyTorch, different for each OS/inference compute
 # https://pytorch.org/get-started/locally/
 # 2) Install Huggingface Transformers
 # pip3 install transformers
 
+## CODE
 # import transformers
 # from transformers import pipeline
 # # Print version
@@ -29,13 +32,20 @@
 import torch
 import numpy as npcle
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+# Set seed for reproducability, only for non-deterministic steps
+torch.manual_seed(100)
+
+## TEXT GENERATION - GPT2 - GREEDY
+# Load gpt2 model, can be gpt-large etc.
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 # add the EOS token as PAD token to avoid warnings
 model = GPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id)
 # encode context the generation is conditioned on
-input_ids = tokenizer.encode('I enjoy walking with my cute dog', return_tensors='pt')
+input_ids = tokenizer.encode('I am a Chief Technical Officer.', return_tensors='pt')
 # generate text until the output length (which includes the context length) reaches 50
 greedy_output = model.generate(input_ids, max_length=50)
 
+# Notice the text-gen output repeats itself
 print("Output:\n" + 100 * '-')
 print(tokenizer.decode(greedy_output[0], skip_special_tokens=True))
