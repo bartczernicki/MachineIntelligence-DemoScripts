@@ -24,6 +24,13 @@
 # Model Generate parameters
 # https://huggingface.co/transformers/main_classes/model.html?highlight=generate#transformers.generation_utils.GenerationMixin.generate
 
+
+########################
+# LIVE DEMO EXAMPLE   ##
+########################
+
+# https://app.inferkit.com/demo
+
 ########################
 # COMMON SCRIPT SETUP ##
 ########################
