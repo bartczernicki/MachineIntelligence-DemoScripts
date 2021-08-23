@@ -160,15 +160,18 @@ for i, samplingProbability_output in enumerate(samplingProbability_outputs):
 ## TEXT GENERATION - GPT2-LARGE - SAMPLING & PROBABILTY
 # Info on model sizes: https://huggingface.co/transformers/pretrained_models.html
 # Load gpt2 model, can be gpt-large etc.
-largeTokenizer = GPT2Tokenizer.from_pretrained("gpt2-large")
+modelSize = "gpt2-large" # Uncomment to run 768 million parameter model
+# modelSize = "gpt2-xl" # Uncomment to run 1.5 billion parameter model
+
+largeTokenizer = GPT2Tokenizer.from_pretrained(modelSize)
 # Add the EOS token as PAD token to avoid warnings
-largeModel = GPT2LMHeadModel.from_pretrained("gpt2-large", pad_token_id=tokenizer.eos_token_id)
+largeModel = GPT2LMHeadModel.from_pretrained(modelSize, pad_token_id=tokenizer.eos_token_id)
 # Encode context the generation is conditioned on
 input_ids = largeTokenizer.encode('You should learn statistical analysis.', return_tensors='pt')
 
 # Generate text until the output length (which includes the context length) reaches 75
 # use temperature to decrease the sensitivity to low probability candidates
-samplingProbability_outputs = largeModel.generate(input_ids, 
+samplingProbabilityLarge_outputs = largeModel.generate(input_ids, 
     do_sample=True, 
     max_length=75,
     # Mix of outputs
@@ -181,5 +184,5 @@ samplingProbability_outputs = largeModel.generate(input_ids,
 
 # Notice the text-gen output does NOT repeats itself (mix of parameters for realistic output), returns 5 sentences
 print("Multiple Sampling & Probability Outputs:\n" + 100 * '-')
-for i, samplingProbability_output in enumerate(samplingProbability_outputs):
-  print("{}: {}".format(i+1, tokenizer.decode(samplingProbability_output, skip_special_tokens=True)))
+for i, samplingProbabilityLarge_output in enumerate(samplingProbabilityLarge_outputs):
+  print("{}: {}".format(i+1, tokenizer.decode(samplingProbabilityLarge_output, skip_special_tokens=True)))
