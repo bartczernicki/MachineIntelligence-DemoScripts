@@ -1,21 +1,12 @@
 
-## SETUP
+###########
+## SETUP ##
+###########
+
 # 1) Install PyTorch, different for each OS/inference compute
 # https://pytorch.org/get-started/locally/
 # 2) Install Huggingface Transformers
 # pip3 install transformers
-
-## CODE
-# import transformers
-# from transformers import pipeline
-# # Print version
-# print("Transformers version: " + transformers.__version__)
-
-# classifier = pipeline('sentiment-analysis')
-# results = classifier(["We are very happy to show you the 🤗 Transformers library.",
-#            "This code is absolultely positively terrible!"])
-# for result in results:
-#     print(f"label: {result['label']}, with score: {round(result['score'], 4)}")
 
 # # https://github.com/huggingface/notebooks/blob/master/course/chapter1/section3.ipynb
 # generator = pipeline("text-generation", model="distilgpt2")
@@ -30,7 +21,13 @@
 # https://huggingface.co/transformers/notebooks.html
 # https://github.com/huggingface/blog/blob/master/notebooks/02_how_to_generate.ipynb
 
-# COMMON SCRIPT SETUP
+# Model Generate parameters
+# https://huggingface.co/transformers/main_classes/model.html?highlight=generate#transformers.generation_utils.GenerationMixin.generate
+
+########################
+# COMMON SCRIPT SETUP ##
+########################
+
 import torch
 import numpy as npcle
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
@@ -46,7 +43,11 @@ model = GPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token
 input_ids = tokenizer.encode('I am a Chief Technical Officer.', return_tensors='pt')
 
 
-## TEXT GENERATION - GPT2 - GREEDY
+########################
+## TEXT GENERATION    ##
+########################
+
+## 1) TEXT GENERATION - GPT2 - GREEDY
 # Generate text until the output length (which includes the context length) reaches 75
 greedy_output = model.generate(input_ids, max_length=75)
 
@@ -55,7 +56,7 @@ print("Greedy Output:\n" + 100 * '-')
 print(tokenizer.decode(greedy_output[0], skip_special_tokens=True))
 
 
-## TEXT GENERATION - GPT2 - BEAM
+## 2) TEXT GENERATION - GPT2 - BEAM
 # Generate text until the output length (which includes the context length) reaches 75
 beam_output = model.generate(input_ids, max_length=75,
     # Beam, no repeat & early stopping
@@ -69,7 +70,7 @@ print("Beam Output:\n" + 100 * '-')
 print(tokenizer.decode(beam_output[0], skip_special_tokens=True))
 
 
-## TEXT GENERATION - GPT2 - BEAM
+## 3) TEXT GENERATION - GPT2 - BEAM
 # Generate text until the output length (which includes the context length) reaches 75
 beam_output = model.generate(input_ids, max_length=75,
     # Beam, no repeat & early stopping
@@ -83,7 +84,7 @@ print("Beam Output:\n" + 100 * '-')
 print(tokenizer.decode(beam_output[0], skip_special_tokens=True))
 
 
-## TEXT GENERATION - GPT2 - MORE BEAMS & MULTIPLE SEQUENCES
+## 4) TEXT GENERATION - GPT2 - MORE BEAMS & MULTIPLE SEQUENCES
 # Generate text until the output length (which includes the context length) reaches 75
 beam_outputs = model.generate(input_ids, max_length=75,
     # Beam, no repeat & early stopping
@@ -100,7 +101,7 @@ for i, beam_output in enumerate(beam_outputs):
   print("{}: {}".format(i+1, tokenizer.decode(beam_output, skip_special_tokens=True)))
 
 
-## TEXT GENERATION - GPT2 - SAMPLING
+## 5) TEXT GENERATION - GPT2 - SAMPLING
 # Generate text until the output length (which includes the context length) reaches 75
 # use temperature to decrease the sensitivity to low probability candidates
 sampling_outputs = model.generate(input_ids, 
@@ -118,7 +119,7 @@ for i, sampling_output in enumerate(sampling_outputs):
   print("{}: {}".format(i+1, tokenizer.decode(sampling_output, skip_special_tokens=True)))
 
 
-## TEXT GENERATION - GPT2 - SAMPLING & PROBABILTY
+## 6) TEXT GENERATION - GPT2 - SAMPLING & PROBABILTY
 # Generate text until the output length (which includes the context length) reaches 75
 # use temperature to decrease the sensitivity to low probability candidates
 samplingProbability_outputs = model.generate(input_ids, 
@@ -137,7 +138,7 @@ for i, samplingProbability_output in enumerate(samplingProbability_outputs):
   print("{}: {}".format(i+1, tokenizer.decode(samplingProbability_output, skip_special_tokens=True)))
 
 
-## TEXT GENERATION - GPT2 - SAMPLING & PROBABILTY
+## 7) TEXT GENERATION - GPT2 - SAMPLING & PROBABILTY
 # Generate text until the output length (which includes the context length) reaches 75
 # use temperature to decrease the sensitivity to low probability candidates
 samplingProbability_outputs = model.generate(input_ids, 
@@ -157,7 +158,7 @@ for i, samplingProbability_output in enumerate(samplingProbability_outputs):
   print("{}: {}".format(i+1, tokenizer.decode(samplingProbability_output, skip_special_tokens=True)))
 
 
-## TEXT GENERATION - GPT2-LARGE - SAMPLING & PROBABILTY
+## 8) TEXT GENERATION - GPT2-LARGE - SAMPLING & PROBABILTY
 # Info on model sizes: https://huggingface.co/transformers/pretrained_models.html
 # Load gpt2 model, can be gpt-large etc.
 modelSize = "gpt2-large" # Uncomment to run 768 million parameter model
