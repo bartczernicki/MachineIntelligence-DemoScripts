@@ -41,15 +41,14 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 # Set seed for reproducability, only for non-deterministic steps
 torch.manual_seed(100)
-
 # Determine if to use GPU or CPU for compute
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # Load gpt2 model, can be gpt-large etc.
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-# Add the EOS token as PAD token to avoid warnings, send to proper compute
+# Add the EOS token as PAD token to avoid warnings, send to proper compute device
 model = GPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id)
 model.to(device)
-# Encode context the generation is conditioned on
+# Encode context the generation is conditioned on, send to proper compute device
 input_ids = tokenizer.encode('I am a Chief Technical Officer.', return_tensors='pt')
 input_ids_OnDevice = input_ids.to(device)
 
