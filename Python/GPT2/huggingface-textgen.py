@@ -42,12 +42,16 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 # Set seed for reproducability, only for non-deterministic steps
 torch.manual_seed(100)
 
+# Determine if to use GPU or CPU for compute
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # Load gpt2 model, can be gpt-large etc.
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-# Add the EOS token as PAD token to avoid warnings
+# Add the EOS token as PAD token to avoid warnings, send to proper compute
 model = GPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id)
+model.to(device)
 # Encode context the generation is conditioned on
 input_ids = tokenizer.encode('I am a Chief Technical Officer.', return_tensors='pt')
+input_ids_OnDevice = input_ids.to(device)
 
 
 ########################
@@ -56,7 +60,7 @@ input_ids = tokenizer.encode('I am a Chief Technical Officer.', return_tensors='
 
 ## 1) TEXT GENERATION - GPT2 - GREEDY
 # Generate text until the output length (which includes the context length) reaches 75
-greedy_output = model.generate(input_ids, max_length=75)
+greedy_output = model.generate(input_ids_OnDevice, max_length=75)
 
 # Notice the text-gen output repeats itself
 print("Greedy Output:\n" + 100 * '-')
@@ -65,7 +69,7 @@ print(tokenizer.decode(greedy_output[0], skip_special_tokens=True))
 
 ## 2) TEXT GENERATION - GPT2 - BEAM
 # Generate text until the output length (which includes the context length) reaches 75
-beam_output = model.generate(input_ids, max_length=75,
+beam_output = model.generate(input_ids_OnDevice, max_length=75,
     # Beam, no repeat & early stopping
     num_beams=5,
     no_repeat_ngram_size=2,
@@ -79,7 +83,7 @@ print(tokenizer.decode(beam_output[0], skip_special_tokens=True))
 
 ## 3) TEXT GENERATION - GPT2 - BEAM
 # Generate text until the output length (which includes the context length) reaches 75
-beam_output = model.generate(input_ids, max_length=75,
+beam_output = model.generate(input_ids_OnDevice, max_length=75,
     # Beam, no repeat & early stopping
     num_beams=5,
     no_repeat_ngram_size=2,
@@ -93,7 +97,7 @@ print(tokenizer.decode(beam_output[0], skip_special_tokens=True))
 
 ## 4) TEXT GENERATION - GPT2 - MORE BEAMS & MULTIPLE SEQUENCES
 # Generate text until the output length (which includes the context length) reaches 75
-beam_outputs = model.generate(input_ids, max_length=75,
+beam_outputs = model.generate(input_ids_OnDevice, max_length=75,
     # Beam, no repeat & early stopping
     num_beams=20,
     no_repeat_ngram_size=2,
@@ -111,7 +115,7 @@ for i, beam_output in enumerate(beam_outputs):
 ## 5) TEXT GENERATION - GPT2 - SAMPLING
 # Generate text until the output length (which includes the context length) reaches 75
 # use temperature to decrease the sensitivity to low probability candidates
-sampling_outputs = model.generate(input_ids, 
+sampling_outputs = model.generate(input_ids_OnDevice, 
     do_sample=True, 
     max_length=75, 
     top_k=50,
@@ -129,7 +133,7 @@ for i, sampling_output in enumerate(sampling_outputs):
 ## 6) TEXT GENERATION - GPT2 - SAMPLING & PROBABILTY
 # Generate text until the output length (which includes the context length) reaches 75
 # use temperature to decrease the sensitivity to low probability candidates
-samplingProbability_outputs = model.generate(input_ids, 
+samplingProbability_outputs = model.generate(input_ids_OnDevice, 
     do_sample=True, 
     max_length=75, 
     top_k=50,
@@ -148,7 +152,7 @@ for i, samplingProbability_output in enumerate(samplingProbability_outputs):
 ## 7) TEXT GENERATION - GPT2 - SAMPLING & PROBABILTY
 # Generate text until the output length (which includes the context length) reaches 75
 # use temperature to decrease the sensitivity to low probability candidates
-samplingProbability_outputs = model.generate(input_ids, 
+samplingProbability_outputs = model.generate(input_ids_OnDevice, 
     do_sample=True, 
     max_length=75,
     # Mix of outputs
@@ -174,12 +178,13 @@ modelSize = "gpt2-large" # Uncomment to run 768 million parameter model
 largeTokenizer = GPT2Tokenizer.from_pretrained(modelSize)
 # Add the EOS token as PAD token to avoid warnings
 largeModel = GPT2LMHeadModel.from_pretrained(modelSize, pad_token_id=tokenizer.eos_token_id)
+largeModel.to(device)
 # Encode context the generation is conditioned on
-input_ids = largeTokenizer.encode('You should learn statistical analysis.', return_tensors='pt')
-
+input_ids_large = largeTokenizer.encode('You should learn statistical analysis.', return_tensors='pt')
+input_ids__large_OnDevice = input_ids_large.to(device)
 # Generate text until the output length (which includes the context length) reaches 75
 # use temperature to decrease the sensitivity to low probability candidates
-samplingProbabilityLarge_outputs = largeModel.generate(input_ids, 
+samplingProbabilityLarge_outputs = largeModel.generate(input_ids__large_OnDevice, 
     do_sample=True, 
     max_length=75,
     # Mix of outputs
