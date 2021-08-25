@@ -43,13 +43,16 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 torch.manual_seed(100)
 # Determine if to use GPU or CPU for compute
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print("GPT2 Model Device Type: " + device)
+# Sentence to start text-generation
+sentenceStart = 'You should consider learning statistics before approaching data science.'
 # Load gpt2 model, can be gpt-large etc.
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 # Add the EOS token as PAD token to avoid warnings, send to proper compute device
 model = GPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id)
 model.to(device)
 # Encode context the generation is conditioned on, send to proper compute device
-input_ids = tokenizer.encode('I am a Chief Technical Officer.', return_tensors='pt')
+input_ids = tokenizer.encode(sentenceStart, return_tensors='pt')
 input_ids_OnDevice = input_ids.to(device)
 
 
@@ -179,7 +182,7 @@ largeTokenizer = GPT2Tokenizer.from_pretrained(modelSize)
 largeModel = GPT2LMHeadModel.from_pretrained(modelSize, pad_token_id=tokenizer.eos_token_id)
 largeModel.to(device)
 # Encode context the generation is conditioned on
-input_ids_large = largeTokenizer.encode('You should learn statistical analysis.', return_tensors='pt')
+input_ids_large = largeTokenizer.encode(sentenceStart, return_tensors='pt')
 input_ids__large_OnDevice = input_ids_large.to(device)
 # Generate text until the output length (which includes the context length) reaches 75
 # use temperature to decrease the sensitivity to low probability candidates
