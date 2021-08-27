@@ -1,3 +1,4 @@
+# source bartpythondemos/bin/activate
 
 ###########
 ## SETUP ##
