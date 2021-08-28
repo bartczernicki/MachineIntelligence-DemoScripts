@@ -50,7 +50,7 @@ gpt2Model = "gpt2" #generic model
 gpt2Model = r"Models\HappyTransformer-FineTuning-TextGen" #fine-tuned model
 
 # Sentence to start text-generation
-sentenceStart = 'You should consider learning statistics before approaching data science.'
+sentenceStart = 'Statistics and confidence intervals is '
 
 # Load gpt2 model, can be gpt-large, gpt-xl or custom etc.
 tokenizer = GPT2Tokenizer.from_pretrained(gpt2Model)

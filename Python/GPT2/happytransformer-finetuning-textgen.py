@@ -28,20 +28,17 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 #########################
 torch.cuda.empty_cache()
 torch.manual_seed(255)
-torch.device("cpu")
 
 baseModelType = "GPT2"
-baseModelArchitecture = "gpt2"
+baseModelArchitecture = "gpt2-large"
 # baseModelType = "GPT-NEO"
 # baseModelArchitecture = "EleutherAI/gpt-neo-125M"
 
 # Load GPT2 medium model
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
-happy_gen._device = torch.device("cpu")
-print(happy_gen._device.type)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=50, batch_size=40) 
+args = GENTrainArgs(num_train_epochs=4, batch_size=40) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)
