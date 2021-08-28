@@ -8,7 +8,7 @@ from transformers import pipeline
 import torch
 
 # Set seed for reproducability, only for non-deterministic steps
-seed = 300
+seed = 400
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 
@@ -24,13 +24,13 @@ baseModelFineTuned = r"Models\HappyTransformer-FineTuning-TextGen" # Fine-tuned 
 
 # Parameters for text generation
 maxLength = 100
-topK = 400
-temperature = 0.7
-topProbabilities = 0.92
-numberOfSentenceSequences = 2
+topK = 500
+temperature = 0.8
+topProbabilities = 0.9
+numberOfSentenceSequences = 4
 
 # Generate text on pre-trained model
-generator = pipeline("text-generation", model=baseModel, device=deviceId)
+generator = pipeline(task="text-generation", model=baseModel, device=deviceId, framework="pt", use_fast=False)
 generatorResults = generator(
     sentenceStart,
     do_sample=True, 
@@ -38,12 +38,12 @@ generatorResults = generator(
     top_k=topK,
     temperature=temperature,
     top_p=topProbabilities, 
-    num_return_sequences=2 
+    num_return_sequences=numberOfSentenceSequences
 )
 print(generatorResults)
 
 # Generate text on fine-tuned model
-generator = pipeline("text-generation", model=baseModelFineTuned, device=deviceId)
+generator = pipeline(task="text-generation", model=baseModelFineTuned, device=deviceId, framework="pt", use_fast=False)
 generatorResults = generator(
     sentenceStart,
     do_sample=True,
@@ -51,6 +51,6 @@ generatorResults = generator(
     top_k=topK,
     temperature=temperature,
     top_p=topProbabilities, 
-    num_return_sequences=2 
+    num_return_sequences=numberOfSentenceSequences
 )
 print(generatorResults)
