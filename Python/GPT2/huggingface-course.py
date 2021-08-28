@@ -5,6 +5,7 @@
 ## SETUP              ##
 ########################
 
+# Import Huggingface Transformers/pipeline libraries
 from transformers import pipeline
 
 
