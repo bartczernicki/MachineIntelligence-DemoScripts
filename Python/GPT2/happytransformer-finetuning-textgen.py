@@ -33,8 +33,8 @@ torch.manual_seed(255)
 # baseModelArchitecture = "gpt2-large"
 baseModelType = "GPT-NEO"
 # baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
-baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
-#baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
+# baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
+baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
 saveLocation = r"Models\HappyTransformer-FineTuning-TextGen"
 
 if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
@@ -49,7 +49,7 @@ elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=1, batch_size=60) 
+args = GENTrainArgs(num_train_epochs=50, batch_size=60) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)

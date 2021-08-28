@@ -18,14 +18,14 @@ deviceId = 0 if torch.cuda.is_available() else -1
 ################################
 ## TEXT GENARATION            ##
 ################################
-sentenceStart = 'Statistics is important in baseball analytics.'
+sentenceStart = 'Statistics problems can be solved using resampling.'
 baseModel = "EleutherAI/gpt-neo-1.3B" # Generic pre-trained model
-baseModelFineTuned = r"Models\HappyTransformer-FineTuning-TextGen" # Fine-tuned model
+baseModelFineTuned = r"Models\HappyTransformer-FineTuning-TextGen-27B" # Fine-tuned model
 
 # Parameters for text generation
 maxLength = 100
 topK = 500
-temperature = 0.8
+temperature = 0.75
 topProbabilities = 0.9
 numberOfSentenceSequences = 4
 
