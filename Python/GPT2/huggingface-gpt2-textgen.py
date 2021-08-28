@@ -47,7 +47,7 @@ torch.manual_seed(100)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print("GPT2 Model Device Type: " + device)
 gpt2Model = "gpt2" #generic model
-gpt2Model = r"Models\HappyTransformer-FineTuning-TextGen" #fine-tuned model
+#gpt2Model = r"Models\HappyTransformer-FineTuning-TextGen" #fine-tuned model
 
 # Sentence to start text-generation
 sentenceStart = 'Statistics and confidence intervals is '
