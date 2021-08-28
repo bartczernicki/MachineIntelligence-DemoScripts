@@ -1,4 +1,4 @@
-Line 1: This file contains text to train a text generation model
-Line 2: This file contains text to train a text generation model
-Line 3: This file contains text to train a text generation model
-Line 4: This file contains text to train a text generation model
+Line 1: Statistics is the study and manipulation of data, including ways to gather, review, analyze, and draw conclusions from data. The two major areas of statistics are descriptive and inferential statistics. Statistics can be used to make better-informed business and investing decisions.
+Line 2: Statistics is a collection of methods for collecting, displaying, analyzing, and drawing conclusions from data. Definition: Descriptive statistics. Descriptive statistics is the branch of statistics that involves organizing, displaying, and describing data.
+Line 3: Statistics is the practice or science of collecting and analyzing numerical data in large quantities, especially for the purpose of inferring proportions in a whole from those in a representative sample.
+Line 4: Statistics is a branch of applied mathematics that involves the collection, description, analysis, and inference of conclusions from quantitative data. The mathematical theories behind statistics rely heavily on differential and integral calculus, linear algebra, and probability theory.

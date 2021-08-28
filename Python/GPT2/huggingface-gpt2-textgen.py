@@ -42,15 +42,21 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 # Set seed for reproducability, only for non-deterministic steps
 torch.manual_seed(100)
+
 # Determine if to use GPU or CPU for compute
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print("GPT2 Model Device Type: " + device)
+gpt2Model = "gpt2" #generic model
+gpt2Model = r"Models\HappyTransformer-FineTuning-TextGen" #fine-tuned model
+
 # Sentence to start text-generation
 sentenceStart = 'You should consider learning statistics before approaching data science.'
-# Load gpt2 model, can be gpt-large etc.
-tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+
+# Load gpt2 model, can be gpt-large, gpt-xl or custom etc.
+tokenizer = GPT2Tokenizer.from_pretrained(gpt2Model)
+
 # Add the EOS token as PAD token to avoid warnings, send to proper compute device
-model = GPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id)
+model = GPT2LMHeadModel.from_pretrained(gpt2Model, pad_token_id=tokenizer.eos_token_id)
 model.to(device)
 # Encode context the generation is conditioned on, send to proper compute device
 input_ids = tokenizer.encode(sentenceStart, return_tensors='pt')
