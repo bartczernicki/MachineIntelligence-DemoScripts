@@ -6,7 +6,10 @@
 ########################
 
 from happytransformer import HappyGeneration, GENSettings, GENTrainArgs
+import torch
 import os
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # happy_gen = HappyGeneration("GPT2", "gpt2-xl")  # Best performance 
 
@@ -23,24 +26,34 @@ import os
 #########################
 ## FINE TUNING MODEL   ##
 #########################
+torch.cuda.empty_cache()
+torch.manual_seed(255)
+torch.device("cpu")
 
-# Load GPT@ large model
-happy_gen = HappyGeneration("GPT2", "gpt2-large")
+baseModelType = "GPT2"
+baseModelArchitecture = "gpt2"
+# baseModelType = "GPT-NEO"
+# baseModelArchitecture = "EleutherAI/gpt-neo-125M"
 
-# # Set up configuration for the model
-# args = GENTrainArgs(num_train_epochs=6) 
+# Load GPT2 medium model
+happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
+happy_gen._device = torch.device("cpu")
+print(happy_gen._device.type)
 
-# # # Traid the model
-# happy_gen.train(r"Data\statisticslines.txt", args=args)
+# Set up configuration for the model
+args = GENTrainArgs(num_train_epochs=50, batch_size=40) 
 
-# # # Save the model
-# happy_gen.save(r"Models\HappyTransformer-FineTuning-TextGen")
+# # Traid the model
+happy_gen.train(r"Data\statisticslines.txt", args=args)
+
+# # Save the model
+happy_gen.save(r"Models\HappyTransformer-FineTuning-TextGen")
 
 
-##########################
-## TEST THE TUNED MODEL ##
-##########################
-happy_gen = HappyGeneration("GPT2", r"Models\HappyTransformer-FineTuning-TextGen")  # Best performance 
+# ##########################
+# ## TEST THE TUNED MODEL ##
+# ##########################
+happy_gen = HappyGeneration(baseModelType, r"Models\HappyTransformer-FineTuning-TextGen")  # Best performance 
 
 genArgs = GENSettings(max_length=100, no_repeat_ngram_size=2, top_p=0.7, temperature=0.2, early_stopping=True, top_k=300)
 result = happy_gen.generate_text("Statistics is ", args=genArgs)
