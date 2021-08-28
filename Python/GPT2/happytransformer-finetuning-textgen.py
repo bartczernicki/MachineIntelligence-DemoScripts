@@ -32,26 +32,36 @@ torch.manual_seed(255)
 # baseModelType = "GPT2"
 # baseModelArchitecture = "gpt2-large"
 baseModelType = "GPT-NEO"
-baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
+# baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
 baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
+#baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
+saveLocation = r"Models\HappyTransformer-FineTuning-TextGen"
+
+if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
+    saveLocation = saveLocation + "-125M"
+elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
+    saveLocation = saveLocation + "-13B"
+elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
+    saveLocation = saveLocation + "-27B"
+
 
 # Load GPT2 medium model
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=25, batch_size=40) 
+args = GENTrainArgs(num_train_epochs=1, batch_size=60) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)
 
 # # Save the model
-happy_gen.save(r"Models\HappyTransformer-FineTuning-TextGen")
+happy_gen.save(saveLocation)
 
 
 # ##########################
 # ## TEST THE TUNED MODEL ##
 # ##########################
-happy_gen = HappyGeneration(baseModelType, r"Models\HappyTransformer-FineTuning-TextGen")  # Best performance 
+happy_gen = HappyGeneration(baseModelType, saveLocation)  # Best performance 
 
 genArgs = GENSettings(max_length=100, no_repeat_ngram_size=2, top_p=0.9, temperature=0.75, early_stopping=True, top_k=300)
 result = happy_gen.generate_text("You should learn statistics ", args=genArgs)
