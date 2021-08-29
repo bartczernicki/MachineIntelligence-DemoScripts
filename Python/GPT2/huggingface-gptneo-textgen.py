@@ -18,11 +18,11 @@ deviceId = 0 if torch.cuda.is_available() else -1
 ################################
 ## TEXT GENARATION            ##
 ################################
-sentenceStart = 'Statistics problems can be solved using resampling.'
+sentenceStart = 'Statistics problems can help make decisions.'
 
 #baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
-baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
-# baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
+#baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger GPT-Neo model
+baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Largest GPT-Neo model
 fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
 
 if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
