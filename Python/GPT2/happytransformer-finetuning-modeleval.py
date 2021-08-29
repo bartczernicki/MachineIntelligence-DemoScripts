@@ -57,10 +57,10 @@ happy_gen = HappyGeneration(model_type="GPT-NEO", model_name=fineTunedModelLocat
 resultGPTNeo13B = happy_gen.eval(evalData, args=args)
 
 # Fine-Tuned model (GPT-NEO 2.7B)
-baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller GPT-Neo model
+baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Smaller GPT-Neo model
 fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
 
-if (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
+if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-125M"
 elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-13B"
@@ -76,7 +76,7 @@ resultGPTNeo27B = happy_gen.eval(evalData, args=args)
 ## RESULTS            ##
 ########################
 
-print("Generic GPT2:" + resultGeneric)  # EvalResult(loss=X)
-print("Fine-tuned GPT-NEO-125M:" + resultGPTNeo125m)  # EvalResult(loss=X)
-print("Fine-tuned GPT-NEO-1.3B:" + resultGPTNeo13B)  # EvalResult(loss=X)
-print("Fine-tuned GPT-NEO-2.7B:" + resultGPTNeo27B)  # EvalResult(loss=X)
+print("Generic GPT2:" + resultGeneric.loss)  # EvalResult(loss=X)
+print("Fine-tuned GPT-NEO-125M:" + resultGPTNeo125m.loss)  # EvalResult(loss=X)
+print("Fine-tuned GPT-NEO-1.3B:" + resultGPTNeo13B.loss)  # EvalResult(loss=X)
+print("Fine-tuned GPT-NEO-2.7B:" + resultGPTNeo27B.loss)  # EvalResult(loss=X)
