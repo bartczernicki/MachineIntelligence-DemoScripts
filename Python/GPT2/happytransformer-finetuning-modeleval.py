@@ -76,7 +76,8 @@ resultGPTNeo27B = happy_gen.eval(evalData, args=args)
 ## RESULTS            ##
 ########################
 
-print("Generic GPT2:" + resultGeneric.loss)  # EvalResult(loss=X)
-print("Fine-tuned GPT-NEO-125M:" + resultGPTNeo125m.loss)  # EvalResult(loss=X)
-print("Fine-tuned GPT-NEO-1.3B:" + resultGPTNeo13B.loss)  # EvalResult(loss=X)
-print("Fine-tuned GPT-NEO-2.7B:" + resultGPTNeo27B.loss)  # EvalResult(loss=X)
+print("**** EVAL RESULTS ****")
+print("Generic GPT2:" + str(resultGeneric.loss))                # EvalResult(loss=3.1945)
+print("Fine-tuned GPT-NEO-125M:" + str(resultGPTNeo125m.loss))  # EvalResult(loss=2.8519)
+print("Fine-tuned GPT-NEO-1.3B:" + str(resultGPTNeo13B.loss))   # EvalResult(loss=2.0999)
+print("Fine-tuned GPT-NEO-2.7B:" + str(resultGPTNeo27B.loss))   # EvalResult(loss=0.0001)
