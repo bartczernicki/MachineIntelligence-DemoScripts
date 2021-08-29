@@ -34,10 +34,10 @@ elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
 
 
 # Parameters for text generation
-maxLength = 100
+maxLength = 200
 topK = 500
-temperature = 0.75
-topProbabilities = 0.9
+temperature = 0.7
+topProbabilities = 0.92
 numberOfSentenceSequences = 4
 
 # Generate text on pre-trained model
