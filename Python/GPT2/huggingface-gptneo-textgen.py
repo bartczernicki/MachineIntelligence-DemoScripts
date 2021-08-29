@@ -20,9 +20,10 @@ deviceId = 0 if torch.cuda.is_available() else -1
 ################################
 sentenceStart = 'Statistics problems can help make decisions.'
 
-#baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
+#baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller GPT-Neo model
 #baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger GPT-Neo model
 baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Largest GPT-Neo model
+baseModelArchitecture = "gpt"
 fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
 
 if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
@@ -31,6 +32,8 @@ elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-13B"
 elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-27B"
+else :
+    fineTunedModelLocation = fineTunedModelLocation + baseModelArchitecture
 
 
 # Parameters for text generation

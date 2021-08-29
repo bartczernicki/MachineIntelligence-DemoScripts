@@ -29,12 +29,15 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 torch.cuda.empty_cache()
 torch.manual_seed(255)
 
-# baseModelType = "GPT2"
+baseModelType = "GPT2"
 # baseModelArchitecture = "gpt2-large"
-baseModelType = "GPT-NEO"
+# baseModelType = "GPT-NEO"
+
 #baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
 # baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
 baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
+baseModelArchitecture = "gpt2-xl"
+
 fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
 
 if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
@@ -43,13 +46,15 @@ elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-13B"
 elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-27B"
+else :
+    fineTunedModelLocation = fineTunedModelLocation + baseModelArchitecture
 
 
-# Load GPT2 medium model
+# Load model type and the architecture/pre-trained model
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=4, batch_size=60) 
+args = GENTrainArgs(num_train_epochs=100, batch_size=60) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)
@@ -63,6 +68,6 @@ happy_gen.save(fineTunedModelLocation)
 # ##########################
 happy_gen = HappyGeneration(baseModelType, fineTunedModelLocation)  # Best performance 
 
-genArgs = GENSettings(max_length=100, no_repeat_ngram_size=2, top_p=0.9, temperature=0.75, early_stopping=True, top_k=300)
+genArgs = GENSettings(max_length=100, no_repeat_ngram_size=2, top_p=0.92, temperature=0.6, early_stopping=True, top_k=400)
 result = happy_gen.generate_text("You should learn statistics ", args=genArgs)
 print(result.text)
