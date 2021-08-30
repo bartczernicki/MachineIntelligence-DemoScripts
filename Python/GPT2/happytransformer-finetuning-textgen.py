@@ -11,6 +11,11 @@ import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+# Ensure all the CPU threads are being used
+torch.set_num_threads(12)
+pyTorchThreads = torch.get_num_threads()
+print("PyTorch number of CPU threads:" + pyTorchThreads)
+
 # happy_gen = HappyGeneration("GPT2", "gpt2-xl")  # Best performance 
 
 # args = GENSettings(max_length=75, no_repeat_ngram_size=3, top_p=0.94, temperature=0.7)

@@ -10,6 +10,10 @@ import os
 
 # Turn of CUDA (for large fine-tuned modes that won't fit on GPU)
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+# Ensure all the CPU threads are being used
+torch.set_num_threads(12)
+pyTorchThreads = torch.get_num_threads()
+print(pyTorchThreads)
 
 args = GENEvalArgs(preprocessing_processes=1, mlm_probability=0.9)
 # Data Location
