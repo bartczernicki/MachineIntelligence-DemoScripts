@@ -30,31 +30,33 @@ torch.cuda.empty_cache()
 torch.manual_seed(255)
 
 baseModelType = "GPT2"
-# baseModelArchitecture = "gpt2-large"
-# baseModelType = "GPT-NEO"
 
 #baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
-# baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
-baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
-baseModelArchitecture = "gpt2-xl"
+baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
+#baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
+#baseModelArchitecture = "gpt2-xl"
 
 fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
 
 if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-125M"
+    baseModelType = "GPT-NEO"
 elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-13B"
+    baseModelType = "GPT-NEO"
 elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-27B"
+    baseModelType = "GPT-NEO"
 else :
     fineTunedModelLocation = fineTunedModelLocation + "-" + baseModelArchitecture
+    baseModelType = "GPT2"
 
 
 # Load model type and the architecture/pre-trained model
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=100, batch_size=60) 
+args = GENTrainArgs(num_train_epochs=100, batch_size=102) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)
