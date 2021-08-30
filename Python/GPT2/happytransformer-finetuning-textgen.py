@@ -47,7 +47,7 @@ elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
 elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-27B"
 else :
-    fineTunedModelLocation = fineTunedModelLocation + baseModelArchitecture
+    fineTunedModelLocation = fineTunedModelLocation + "-" + baseModelArchitecture
 
 
 # Load model type and the architecture/pre-trained model

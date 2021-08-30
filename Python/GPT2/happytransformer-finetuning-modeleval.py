@@ -40,6 +40,21 @@ happy_gen = HappyGeneration("GPT-NEO", "EleutherAI/gpt-neo-2.7B")
 resultGenericGPTNeo27B = happy_gen.eval(evalData, args=args)
 
 
+# Fine-Tuned model (GPT2-xl)
+baseModelArchitecture = "gpt2-xl" # Smaller GPT-Neo model
+fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
+
+if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
+    fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-125M"
+elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
+    fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-13B"
+elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
+    fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-27B"
+else :
+    fineTunedModelLocation = fineTunedModelLocation + "-" + baseModelArchitecture
+
+happy_gen = HappyGeneration(model_type="GPT2", model_name=fineTunedModelLocation) 
+resultGPT2xl = happy_gen.eval(evalData, args=args)
 
 # Fine-Tuned model (GPT-NEO 125mil)
 baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller GPT-Neo model
@@ -52,7 +67,7 @@ elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
 elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
     fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-27B"
 else :
-    fineTunedModelLocation = fineTunedModelLocation + baseModelArchitecture
+    fineTunedModelLocation = fineTunedModelLocation + "-" + baseModelArchitecture
 
 happy_gen = HappyGeneration(model_type="GPT-NEO", model_name=fineTunedModelLocation) 
 resultGPTNeo125m = happy_gen.eval(evalData, args=args)
@@ -99,6 +114,7 @@ print("Generic GPT2-XL:" + str(resultGenericGPT2XL.loss))               # EvalRe
 print("Generic GPT-NEO-125M:" + str(resultGenericGPTNeo125M.loss))      # EvalResult(loss=2.9889)
 print("Generic GPT-NEO-1.3B:" + str(resultGenericGPTNeo13B.loss))       # EvalResult(loss=2.5649)
 print("Generic GPT-NEO-2.7B:" + str(resultGenericGPTNeo27B.loss))       # EvalResult(loss=2.4492)
+print("Fine-tuned GPT2-xl:" + str(resultGPT2xl.loss)) 
 print("Fine-tuned GPT-NEO-125M:" + str(resultGPTNeo125m.loss))          # EvalResult(loss=2.8519)
 print("Fine-tuned GPT-NEO-1.3B:" + str(resultGPTNeo13B.loss))           # EvalResult(loss=2.0999)
 print("Fine-tuned GPT-NEO-2.7B:" + str(resultGPTNeo27B.loss))           # EvalResult(loss=0.0001)
