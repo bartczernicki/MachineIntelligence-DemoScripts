@@ -14,7 +14,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 # Ensure all the CPU threads are being used
 torch.set_num_threads(12)
 pyTorchThreads = torch.get_num_threads()
-print("PyTorch number of CPU threads:" + str(pyTorchThreads))
+print("PyTorch number of CPU threads: " + str(pyTorchThreads))
 
 # happy_gen = HappyGeneration("GPT2", "gpt2-xl")  # Best performance 
 
@@ -36,9 +36,9 @@ torch.manual_seed(255)
 
 baseModelType = "GPT2"
 
-baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
+#baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
 #baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
-#baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
+baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
 #baseModelArchitecture = "gpt2-xl"
 
 fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
@@ -61,7 +61,7 @@ else :
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=100, batch_size=102) 
+args = GENTrainArgs(num_train_epochs=75, batch_size=102) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)
