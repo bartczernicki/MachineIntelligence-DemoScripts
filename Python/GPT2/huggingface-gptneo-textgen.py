@@ -46,9 +46,9 @@ else :
 
 # Parameters for text-generation
 maxLength = 120
-topK = 200
-temperature = 0.5
-topProbabilities = 0.96
+topK = 80
+temperature = 0.4
+topProbabilities = 0.94
 numberOfSentenceSequences = 8
 
 # Generate text on (generic) pre-trained model
