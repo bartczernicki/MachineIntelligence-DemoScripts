@@ -19,7 +19,9 @@ def main():
     # Config Variables
     seed = 100
     cpuThreads = 12
-    sentencesStartForTextGeneration = ['Statistics can be used to help make decisions.', 'Data science is used in sports.', 'Baseball coaches use statistics for ']
+    sentencesStartForTextGeneration = ['Statistics can be used to help make decisions.', 'Data science is used in sports.', 'Baseball coaches use statistics for ',
+        'Making decisions can be aided by probabilistic approaches.', 'Sports analytics includes using ', 'There are many ways to use statistics in sports.',
+        'Machine intelligence can help the decision making process', 'A decision support system is ']
 
     # Configue CPU/GPU Compute for process
     deviceId = configure_compute("cpu")
@@ -42,12 +44,12 @@ def main():
     textGenCsv = r"Data\TextGeneratedFromModels.txt"
 
     # Parameters for text-generation
-    maxLength = 100
-    topK = 50
-    temperature = 0.4
-    topProbabilities = 0.94
-    numberOfSentenceSequences = 20
-    noRepeatNgramSize = 2
+    maxLength = 120
+    topK = 100
+    temperature = 0.5
+    topProbabilities = 0.92
+    numberOfSentenceSequences = 100
+    noRepeatNgramSize = 3
 
     ################################
     ## TEXT GENARATION            ##
