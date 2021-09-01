@@ -1,6 +1,7 @@
 import torch
 import os
 import csv
+import random
 
 
 def configure_compute(desiredCompute):
@@ -44,7 +45,7 @@ def get_finetuned_model_location(baseModelArchitecture, fineTunedModelLocationBa
     print("CONFIG - Fine-Tuned Model Location Path: " + str(modelLocationPath))
     return modelLocationPath
 
-def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation, timeElapsed, topK, temperature, topProbabilities, noRepeatNgramSize):
+def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation, timeElapsed, seed, topK, temperature, topProbabilities, noRepeatNgramSize):
 
     with open(textGenCsv, 'a', encoding='UTF8', newline='') as csvfile: 
         # creating a csv dict writer object 
@@ -55,6 +56,7 @@ def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation
             listToWrite = []
             listToWrite.append("Model=" + fineTunedModelLocation)
             listToWrite.append("TimeElapsed=" + str(timeElapsed))
+            listToWrite.append("Seed=" + str(seed))
             listToWrite.append("Params=top_k:{}tempature:{}top_p:{}noRepeatNgramSize:{}".format(topK, temperature, topProbabilities, noRepeatNgramSize))
             # Access dictionary items
             stringToWrite = str(textGenResult).replace(r"\n\n", " ")
@@ -65,7 +67,7 @@ def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation
 
 class TextGenerationConfig:
 
-    def __init__(self):
+    def __init__(self, generateRandom = False):
         #self.baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger GPT-Neo model
         self.baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Largest GPT-Neo model
         #self.baseModelArchitecture = "gpt"
@@ -74,8 +76,15 @@ class TextGenerationConfig:
         self.do_sample = True
         self.min_length = 100
         self.max_length = 150
-        self.top_k = 160
-        self.temperature = 0.4
-        self.top_p = 0.86
-        self.no_repeat_ngram_size = 4
         self.num_return_sequences = 50
+
+        if (generateRandom):
+            self.top_k = random.randint(40, 240)
+            self.temperature = round(random.uniform(0.12, 0.92), 2)
+            self.top_p = round(random.uniform(0.7, 0.96), 2)
+            self.no_repeat_ngram_size = random.randint(1, 4)
+        else:
+            self.top_k = 160
+            self.temperature = 0.4
+            self.top_p = 0.86
+            self.no_repeat_ngram_size = 4

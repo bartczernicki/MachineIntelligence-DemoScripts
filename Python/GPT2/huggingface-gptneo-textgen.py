@@ -5,6 +5,7 @@
 import huggingfacehelpers # Custom module helpers
 from transformers import pipeline # Huggingface transformers
 import time
+import random
 
 def main():
 
@@ -13,11 +14,12 @@ def main():
     ########################
 
     # Config Variables
-    seed = 200
-    cpuThreads = 18
-    sentencesStartForTextGeneration = ['Statistics can be used to help make decisions.', 'Data science is used in sports.', 'Baseball coaches use statistics for ',
+    seed = random.randint(1, 100000) # Set to static value instead of RNG for reproducability
+    cpuThreads = 12
+    sentencesStartForTextGeneration = ['Statistics can be used to help make decisions.', 'Data science is used in sports.', 'Baseball coaches use statistics for',
         'Making decisions can be aided by probabilistic approaches.', 'Sports analytics includes using ', 'There are many ways to use statistics in sports.',
-        'Machine intelligence can help the decision making process', 'A decision support system is ']
+        'Machine intelligence can help the decision making process', 'A decision support system is']
+    numberOfIterations = 5
 
     # Configue CPU/GPU Compute for process
     deviceId = huggingfacehelpers.configure_compute("cpu")
@@ -44,41 +46,46 @@ def main():
     ## TEXT GENARATION            ##
     ################################
 
+    for iteration in range(numberOfIterations):
 
-    for textGenModel in modelsForTextGeneration:
-        # Load the generator once for each model pass
-        generator = pipeline(task="text-generation", model=textGenModel, device=deviceId, framework="pt", use_fast=False)
+        print("here")
+        # Get text generation config (random)
+        textGenerationConfig = huggingfacehelpers.TextGenerationConfig(generateRandom=True)
 
-        for sentenceStart in sentencesStartForTextGeneration:
-            print("Performing text generation using: {}. Sentence: {}".format(textGenModel, sentenceStart))
-            startTime = time.time()
+        for textGenModel in modelsForTextGeneration:
+            # Load the generator once for each model pass
+            generator = pipeline(task="text-generation", model=textGenModel, device=deviceId, framework="pt", use_fast=False)
 
-            # Generate text on (generic) pre-trained model
-            generatorResults = generator(
-                sentenceStart,
-                clean_up_tokenization_spaces = textGenerationConfig.clean_up_tokenization_spaces,
-                do_sample=textGenerationConfig.do_sample,
-                min_length=textGenerationConfig.min_length,
-                max_length=textGenerationConfig.max_length,
-                top_k=textGenerationConfig.top_k,
-                temperature=textGenerationConfig.temperature,
-                top_p=textGenerationConfig.top_p,
-                no_repeat_ngram_size=textGenerationConfig.no_repeat_ngram_size,
-                num_return_sequences=textGenerationConfig.num_return_sequences
-            )
+            for sentenceStart in sentencesStartForTextGeneration:
+                print("Performing text generation using: {}. Sentence: {}".format(textGenModel, sentenceStart))
+                startTime = time.time()
 
-            # Print elapsed time
-            timeElapsed = time.time() - startTime
-            print("Time elapsed generating text: ", timeElapsed)
+                # Generate text on (generic) pre-trained model
+                generatorResults = generator(
+                    sentenceStart,
+                    clean_up_tokenization_spaces = textGenerationConfig.clean_up_tokenization_spaces,
+                    do_sample=textGenerationConfig.do_sample,
+                    min_length=textGenerationConfig.min_length,
+                    max_length=textGenerationConfig.max_length,
+                    top_k=textGenerationConfig.top_k,
+                    temperature=textGenerationConfig.temperature,
+                    top_p=textGenerationConfig.top_p,
+                    no_repeat_ngram_size=textGenerationConfig.no_repeat_ngram_size,
+                    num_return_sequences=textGenerationConfig.num_return_sequences
+                )
 
-            # Write text generated to CSV
-            huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, timeElapsed, 
-                textGenerationConfig.top_k, textGenerationConfig.temperature, textGenerationConfig.top_p, textGenerationConfig.no_repeat_ngram_size)
+                # Print elapsed time
+                timeElapsed = round(time.time() - startTime, 2)
+                print("Time elapsed generating text: ", timeElapsed)
 
-            # Debug Iterate over generated results list
-            # for listItem in generatorResults:
-            #     # Access dictionary items
-            #     print(str(listItem['generated_text']).rstrip('\n'))
+                # Write text generated to CSV
+                huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, timeElapsed, seed,
+                    textGenerationConfig.top_k, textGenerationConfig.temperature, textGenerationConfig.top_p, textGenerationConfig.no_repeat_ngram_size)
+
+                # Debug Iterate over generated results list
+                # for listItem in generatorResults:
+                #     # Access dictionary items
+                #     print(str(listItem['generated_text']).rstrip('\n'))
 
 
 # Main entry method
