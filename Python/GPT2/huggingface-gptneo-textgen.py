@@ -69,7 +69,7 @@ def main():
 
             # Print elapsed time
             timeElapsed = time.time() - startTime
-            print("Time elapsed generating text: ", )
+            print("Time elapsed generating text: ", timeElapsed)
 
             # Write text generated to CSV
             huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, timeElapsed, 

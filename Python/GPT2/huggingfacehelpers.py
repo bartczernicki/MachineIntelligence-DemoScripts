@@ -54,7 +54,7 @@ def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation
         for i, textGenResult in enumerate(generatorResults) :
             listToWrite = []
             listToWrite.append("Model=" + fineTunedModelLocation)
-            listToWrite.append("TimeElapsed=" + timeElapsed)
+            listToWrite.append("TimeElapsed=" + str(timeElapsed))
             listToWrite.append("Params=top_k:{}tempature:{}top_p:{}noRepeatNgramSize:{}".format(topK, temperature, topProbabilities, noRepeatNgramSize))
             # Access dictionary items
             stringToWrite = str(textGenResult).replace(r"\n\n", " ")
@@ -74,8 +74,8 @@ class TextGenerationConfig:
         self.do_sample = True
         self.min_length = 100
         self.max_length = 150
-        self.top_k = 150
-        self.temperature = 0.5
-        self.top_p = 0.88
+        self.top_k = 160
+        self.temperature = 0.4
+        self.top_p = 0.86
         self.no_repeat_ngram_size = 4
         self.num_return_sequences = 50
