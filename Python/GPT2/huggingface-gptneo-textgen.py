@@ -46,18 +46,22 @@ def main():
     topK = 50
     temperature = 0.4
     topProbabilities = 0.94
-    numberOfSentenceSequences = 100
-
+    numberOfSentenceSequences = 20
+    noRepeatNgramSize = 2
 
     ################################
     ## TEXT GENARATION            ##
     ################################
 
-    for sentenceStart in sentencesStartForTextGeneration:
-        for textGenModel in modelsForTextGeneration:
-            #Generate text on (generic) pre-trained model
+
+    for textGenModel in modelsForTextGeneration:
+        # Load the generator once for each model pass
+        generator = pipeline(task="text-generation", model=textGenModel, device=deviceId, framework="pt", use_fast=False)
+
+        for sentenceStart in sentencesStartForTextGeneration:
             print("Performing text generation using: {}. Sentence: {}".format(textGenModel, sentenceStart))
-            generator = pipeline(task="text-generation", model=textGenModel, device=deviceId, framework="pt", use_fast=False)
+
+            # Generate text on (generic) pre-trained model
             generatorResults = generator(
                 sentenceStart,
                 clean_up_tokenization_spaces = True,
@@ -65,7 +69,8 @@ def main():
                 max_length=maxLength,
                 top_k=topK,
                 temperature=temperature,
-                top_p=topProbabilities, 
+                top_p=topProbabilities,
+                no_repeat_ngram_size=noRepeatNgramSize,
                 num_return_sequences=numberOfSentenceSequences
             )
             # Write text generated to CSV
