@@ -1,78 +1,166 @@
 # https://happytransformer.com/text-generation/
 # https://github.com/EricFillion/happy-transformer/tree/master/examples/generation
 
-########################
-## SETUP              ##
-########################
+
 
 from transformers import pipeline
 import torch
+import os
+import csv
+import inspect
 
-# Set seed for reproducability, only for non-deterministic steps
-seed = 400
-torch.manual_seed(seed)
-torch.cuda.manual_seed(seed)
 
-# Ensure all the CPU threads are being used
-numberOfCPUThreads = 12
-torch.set_num_threads(numberOfCPUThreads)
-pyTorchThreads = torch.get_num_threads()
-print("PyTorch config for number of CPU threads: " + str(pyTorchThreads))
+def main():
 
-# Determine if to use GPU or CPU for compute
-deviceId = 0 if torch.cuda.is_available() else -1
+    ########################
+    ## CONFIG             ##
+    ########################
 
-################################
-## TEXT GENARATION            ##
-################################
-sentenceStart = 'Statistics can be used to help make decisions.'
+    # Config Variables
+    seed = 100
+    cpuThreads = 12
+    sentencesStartForTextGeneration = ['Statistics can be used to help make decisions.', 'Data science is used in sports.', 'Baseball coaches use statistics for ']
 
-#baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller GPT-Neo model
-# baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger GPT-Neo model
-baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Largest GPT-Neo model
-#baseModelArchitecture = "gpt"
-fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
+    # Configue CPU/GPU Compute for process
+    deviceId = configure_compute("cpu")
 
-if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
-    fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-125M"
-elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
-    fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-13B"
-elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
-    fineTunedModelLocation = fineTunedModelLocation + "-GPTNeo-27B"
-else :
-    fineTunedModelLocation = fineTunedModelLocation + baseModelArchitecture
+    # Set random seed & CPU threads
+    set_seed_and_cpu_threads(seed = seed, cpuThreads=cpuThreads)
 
-# fineTunedModelLocation = r"EleutherAI/gpt-neo-125M"
+    # Get model location
+    fineTunedModelLocationBasePath = r"Models\HappyTransformer-FineTuning-TextGen"
+    # baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller GPT-Neo model
+    # baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger GPT-Neo model
+    baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Largest GPT-Neo model
+    #baseModelArchitecture = "gpt"
+    fineTunedModelLocation = get_finetuned_model_location(baseModelArchitecture, fineTunedModelLocationBasePath)
+    modelsForTextGeneration = []
+    modelsForTextGeneration.append(baseModelArchitecture)
+    modelsForTextGeneration.append(fineTunedModelLocation)
 
-# Parameters for text-generation
-maxLength = 120
-topK = 80
-temperature = 0.4
-topProbabilities = 0.94
-numberOfSentenceSequences = 8
+    # Data Location (format appopriate for OS)
+    textGenCsv = r"Data\TextGeneratedFromModels.txt"
 
-# Generate text on (generic) pre-trained model
-generator = pipeline(task="text-generation", model=baseModelArchitecture, device=deviceId, framework="pt", use_fast=False)
-generatorResults = generator(
-    sentenceStart,
-    do_sample=True, 
-    max_length=maxLength,
-    top_k=topK,
-    temperature=temperature,
-    top_p=topProbabilities, 
-    num_return_sequences=numberOfSentenceSequences
-)
-print(generatorResults)
+    # Parameters for text-generation
+    maxLength = 100
+    topK = 50
+    temperature = 0.4
+    topProbabilities = 0.94
+    numberOfSentenceSequences = 100
 
-# Generate text on fine-tuned model
-generator = pipeline(task="text-generation", model=fineTunedModelLocation, device=deviceId, framework="pt", use_fast=False)
-generatorResults = generator(
-    sentenceStart,
-    do_sample=True,
-    max_length=maxLength,
-    top_k=topK,
-    temperature=temperature,
-    top_p=topProbabilities, 
-    num_return_sequences=numberOfSentenceSequences
-)
-print(generatorResults)
+
+    ################################
+    ## TEXT GENARATION            ##
+    ################################
+
+    for sentenceStart in sentencesStartForTextGeneration:
+        for textGenModel in modelsForTextGeneration:
+            #Generate text on (generic) pre-trained model
+            print("Performing text generation using: {}. Sentence: {}".format(textGenModel, sentenceStart))
+            generator = pipeline(task="text-generation", model=textGenModel, device=deviceId, framework="pt", use_fast=False)
+            generatorResults = generator(
+                sentenceStart,
+                clean_up_tokenization_spaces = True,
+                do_sample=True, 
+                max_length=maxLength,
+                top_k=topK,
+                temperature=temperature,
+                top_p=topProbabilities, 
+                num_return_sequences=numberOfSentenceSequences
+            )
+            # Write text generated to CSV
+            write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, topK, temperature, topProbabilities)
+
+    # Iterate over generated results list
+    # for listItem in generatorResults:
+    #     # Access dictionary items
+    #     print(str(listItem['generated_text']).rstrip('\n'))
+
+
+    # for i, textGenResult in enumerate(generatorResults) :
+    #     # Extract the sentence
+    #     print(str(textGenResult).replace("{'generated_text': '", "").replace("'}", ""))
+
+
+    # # Generate text on fine-tuned model
+    # generator = pipeline(task="text-generation", model=fineTunedModelLocation, device=deviceId, framework="pt", use_fast=False)
+    # generatorResults = generator(
+    #     sentencesStartForTextGeneration[0],
+    #     clean_up_tokenization_spaces = True,
+    #     do_sample=True,
+    #     max_length=maxLength,
+    #     top_k=topK,
+    #     temperature=temperature,
+    #     top_p=topProbabilities,
+    #     num_return_sequences=numberOfSentenceSequences
+    # )
+    # # Write text generated to CSV
+    # write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation, topK, temperature, topProbabilities)
+    
+    # for i, textGenResult in enumerate(generatorResults) :
+    #     # Extract the sentence
+    #     print(str(textGenResult).replace("{'generated_text': '", "").replace("'}", ""))
+
+
+def configure_compute(desiredCompute):
+    # Turn off CUDA (for large fine-tuned modes that won't fit on GPU)
+    deviceId = 0
+
+    if (desiredCompute == "cpu") :
+        os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+        deviceId = -1
+    elif (desiredCompute == "cuda") :
+        deviceId = 0
+    elif (desiredCompute == "default") :
+        deviceId = 0 if torch.cuda.is_available() else -1
+    print("CONFIG - device compute: " + str(desiredCompute))
+
+    return deviceId
+
+def set_seed_and_cpu_threads(seed, cpuThreads):
+    # set seed for reproducability
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    print("CONFIG - seed: " + str(seed))
+
+    # Ensure all the CPU threads are being used
+    torch.set_num_threads(cpuThreads)
+    pyTorchThreads = torch.get_num_threads()
+    print("CONFIG - PyTorch config for number of CPU threads: " + str(pyTorchThreads))
+
+def get_finetuned_model_location(baseModelArchitecture, fineTunedModelLocationBasePath = ""):
+    modelLocationPath = ""
+
+    if (baseModelArchitecture == r"EleutherAI/gpt-neo-125M") :
+        modelLocationPath = fineTunedModelLocationBasePath + "-GPTNeo-125M"
+    elif (baseModelArchitecture == r"EleutherAI/gpt-neo-1.3B") :
+        modelLocationPath = fineTunedModelLocationBasePath + "-GPTNeo-13B"
+    elif (baseModelArchitecture == r"EleutherAI/gpt-neo-2.7B") :
+        modelLocationPath = fineTunedModelLocationBasePath + "-GPTNeo-27B"
+    else :
+        modelLocationPath = fineTunedModelLocationBasePath + baseModelArchitecture
+
+    print("CONFIG - Fine-Tuned Model Location Path: " + str(modelLocationPath))
+    return modelLocationPath
+
+def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation, topK, temperature, topProbabilities):
+
+    with open(textGenCsv, 'a', encoding='UTF8', newline='') as csvfile: 
+        # creating a csv dict writer object 
+        writer = csv.writer(csvfile, delimiter = "|") 
+    
+        # Iterate over generated results list
+        for i, textGenResult in enumerate(generatorResults) :
+            listToWrite = []
+            listToWrite.append("Model=" + fineTunedModelLocation)
+            listToWrite.append("Params=top_k:{}tempature:{}top_p:{}".format(topK, temperature, topProbabilities))
+            # Access dictionary items
+            stringToWrite = str(textGenResult).replace(r"\n\n", " ")
+            listToWrite.append(stringToWrite)
+
+            # write the row
+            writer.writerow(listToWrite)
+
+# Main entry method
+if __name__ == "__main__":
+    main()

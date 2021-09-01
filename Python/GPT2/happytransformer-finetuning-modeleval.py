@@ -8,7 +8,7 @@ from happytransformer import HappyGeneration, GENEvalArgs
 import torch
 import os
 
-# Turn of CUDA (for large fine-tuned modes that won't fit on GPU)
+# Turn off CUDA (for large fine-tuned modes that won't fit on GPU)
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Ensure all the CPU threads are being used
