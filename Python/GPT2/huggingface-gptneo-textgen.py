@@ -82,26 +82,6 @@ def main():
     #     print(str(textGenResult).replace("{'generated_text': '", "").replace("'}", ""))
 
 
-    # # Generate text on fine-tuned model
-    # generator = pipeline(task="text-generation", model=fineTunedModelLocation, device=deviceId, framework="pt", use_fast=False)
-    # generatorResults = generator(
-    #     sentencesStartForTextGeneration[0],
-    #     clean_up_tokenization_spaces = True,
-    #     do_sample=True,
-    #     max_length=maxLength,
-    #     top_k=topK,
-    #     temperature=temperature,
-    #     top_p=topProbabilities,
-    #     num_return_sequences=numberOfSentenceSequences
-    # )
-    # # Write text generated to CSV
-    # write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation, topK, temperature, topProbabilities)
-    
-    # for i, textGenResult in enumerate(generatorResults) :
-    #     # Extract the sentence
-    #     print(str(textGenResult).replace("{'generated_text': '", "").replace("'}", ""))
-
-
 def configure_compute(desiredCompute):
     # Turn off CUDA (for large fine-tuned modes that won't fit on GPU)
     deviceId = 0
