@@ -61,3 +61,20 @@ def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation
 
             # write the row
             writer.writerow(listToWrite)
+
+class TextGenerationConfig:
+
+    def __init__(self):
+        #self.baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger GPT-Neo model
+        self.baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Largest GPT-Neo model
+        #self.baseModelArchitecture = "gpt"
+        #self.baseModelArchitecture = str(r"EleutherAI/gpt-neo-125M") # Smaller GPT-Neo model
+        self.clean_up_tokenization_spaces = True
+        self.do_sample = True
+        self.min_length = 100
+        self.max_length = 150
+        self.top_k = 150
+        self.temperature = 0.5
+        self.top_p = 0.88
+        self.no_repeat_ngram_size = 4
+        self.num_return_sequences = 50

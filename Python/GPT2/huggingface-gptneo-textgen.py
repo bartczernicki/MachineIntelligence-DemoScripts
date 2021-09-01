@@ -13,8 +13,8 @@ def main():
     ########################
 
     # Config Variables
-    seed = 100
-    cpuThreads = 12
+    seed = 200
+    cpuThreads = 18
     sentencesStartForTextGeneration = ['Statistics can be used to help make decisions.', 'Data science is used in sports.', 'Baseball coaches use statistics for ',
         'Making decisions can be aided by probabilistic approaches.', 'Sports analytics includes using ', 'There are many ways to use statistics in sports.',
         'Machine intelligence can help the decision making process', 'A decision support system is ']
@@ -27,26 +27,18 @@ def main():
 
     # Get model location
     fineTunedModelLocationBasePath = r"Models\HappyTransformer-FineTuning-TextGen"
-    baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller GPT-Neo model
+    # Get text generation config
+    textGenerationConfig = huggingfacehelpers.TextGenerationConfig()
 
-    # baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger GPT-Neo model
-    #baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Largest GPT-Neo model
-    #baseModelArchitecture = "gpt"
-    fineTunedModelLocation = huggingfacehelpers.get_finetuned_model_location(baseModelArchitecture, fineTunedModelLocationBasePath)
+    fineTunedModelLocation = huggingfacehelpers.get_finetuned_model_location(textGenerationConfig.baseModelArchitecture, fineTunedModelLocationBasePath)
     modelsForTextGeneration = []
-    modelsForTextGeneration.append(baseModelArchitecture)
+    modelsForTextGeneration.append(textGenerationConfig.baseModelArchitecture)
     modelsForTextGeneration.append(fineTunedModelLocation)
 
     # Data Location (format appopriate for OS)
     textGenCsv = r"Data\TextGeneratedFromModels.txt"
 
-    # Parameters for text-generation
-    maxLength = 120
-    topK = 100
-    temperature = 0.5
-    topProbabilities = 0.92
-    numberOfSentenceSequences = 100
-    noRepeatNgramSize = 3
+
 
     ################################
     ## TEXT GENARATION            ##
@@ -64,14 +56,15 @@ def main():
             # Generate text on (generic) pre-trained model
             generatorResults = generator(
                 sentenceStart,
-                clean_up_tokenization_spaces = True,
-                do_sample=True, 
-                max_length=maxLength,
-                top_k=topK,
-                temperature=temperature,
-                top_p=topProbabilities,
-                no_repeat_ngram_size=noRepeatNgramSize,
-                num_return_sequences=numberOfSentenceSequences
+                clean_up_tokenization_spaces = textGenerationConfig.clean_up_tokenization_spaces,
+                do_sample=textGenerationConfig.do_sample,
+                min_length=textGenerationConfig.min_length,
+                max_length=textGenerationConfig.max_length,
+                top_k=textGenerationConfig.top_k,
+                temperature=textGenerationConfig.temperature,
+                top_p=textGenerationConfig.top_p,
+                no_repeat_ngram_size=textGenerationConfig.no_repeat_ngram_size,
+                num_return_sequences=textGenerationConfig.num_return_sequences
             )
 
             # Print elapsed time

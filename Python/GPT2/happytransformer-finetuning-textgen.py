@@ -12,7 +12,7 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Ensure all the CPU threads are being used
-torch.set_num_threads(12)
+torch.set_num_threads(18)
 pyTorchThreads = torch.get_num_threads()
 print("PyTorch number of CPU threads: " + str(pyTorchThreads))
 
