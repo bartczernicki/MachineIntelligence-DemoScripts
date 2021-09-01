@@ -68,11 +68,12 @@ def main():
             )
 
             # Print elapsed time
-            endTime = time.time()
-            print("Time elapsed generating text: ", endTime - startTime)
+            timeElapsed = time.time() - startTime
+            print("Time elapsed generating text: ", )
 
             # Write text generated to CSV
-            # huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, topK, temperature, topProbabilities)
+            huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, timeElapsed, 
+                textGenerationConfig.top_k, textGenerationConfig.temperature, textGenerationConfig.top_p, textGenerationConfig.no_repeat_ngram_size)
 
             # Debug Iterate over generated results list
             # for listItem in generatorResults:

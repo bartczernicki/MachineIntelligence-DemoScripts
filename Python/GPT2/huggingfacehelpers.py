@@ -44,7 +44,7 @@ def get_finetuned_model_location(baseModelArchitecture, fineTunedModelLocationBa
     print("CONFIG - Fine-Tuned Model Location Path: " + str(modelLocationPath))
     return modelLocationPath
 
-def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation, topK, temperature, topProbabilities):
+def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation, timeElapsed, topK, temperature, topProbabilities, noRepeatNgramSize):
 
     with open(textGenCsv, 'a', encoding='UTF8', newline='') as csvfile: 
         # creating a csv dict writer object 
@@ -54,7 +54,8 @@ def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation
         for i, textGenResult in enumerate(generatorResults) :
             listToWrite = []
             listToWrite.append("Model=" + fineTunedModelLocation)
-            listToWrite.append("Params=top_k:{}tempature:{}top_p:{}".format(topK, temperature, topProbabilities))
+            listToWrite.append("TimeElapsed=" + timeElapsed)
+            listToWrite.append("Params=top_k:{}tempature:{}top_p:{}noRepeatNgramSize:{}".format(topK, temperature, topProbabilities, noRepeatNgramSize))
             # Access dictionary items
             stringToWrite = str(textGenResult).replace(r"\n\n", " ")
             listToWrite.append(stringToWrite)
