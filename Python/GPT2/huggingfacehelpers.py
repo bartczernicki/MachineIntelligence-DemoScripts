@@ -75,14 +75,14 @@ class TextGenerationConfig:
         self.clean_up_tokenization_spaces = True
         self.do_sample = True
         self.min_length = 100
-        self.max_length = 150
+        self.max_length = 200
         self.num_return_sequences = 50
 
         if (generateRandom):
-            self.top_k = random.randint(40, 240)
-            self.temperature = round(random.uniform(0.12, 0.92), 2)
-            self.top_p = round(random.uniform(0.7, 0.96), 2)
-            self.no_repeat_ngram_size = random.randint(1, 4)
+            self.top_k = random.randint(40, 1500)
+            self.temperature = round(random.uniform(0.1, 0.96), 2)
+            self.top_p = round(random.uniform(0.6, 0.96), 2)
+            self.no_repeat_ngram_size = random.randint(1, 5)
         else:
             self.top_k = 160
             self.temperature = 0.4
