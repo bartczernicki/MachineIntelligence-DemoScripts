@@ -77,6 +77,7 @@ class TextGenerationConfig:
         self.min_length = 100
         self.max_length = 200
         self.num_return_sequences = 50
+        self.evalData = r"Data\statisticslines.txt"
 
         if (generateRandom):
             self.top_k = random.randint(40, 1500)
