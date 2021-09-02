@@ -34,8 +34,9 @@ def main():
 
     fineTunedModelLocation = huggingfacehelpers.get_finetuned_model_location(textGenerationConfig.baseModelArchitecture, fineTunedModelLocationBasePath)
     modelsForTextGeneration = []
-    modelsForTextGeneration.append(textGenerationConfig.baseModelArchitecture)
     modelsForTextGeneration.append(fineTunedModelLocation)
+    modelsForTextGeneration.append(textGenerationConfig.baseModelArchitecture)
+
 
     # Data Location (format appopriate for OS)
     textGenCsv = r"Data\TextGeneratedFromModels.txt"
@@ -48,8 +49,7 @@ def main():
 
     for iteration in range(numberOfIterations):
 
-        print("here")
-        # Get text generation config (random)
+        # Get text generation config (random text-gen parameters)
         textGenerationConfig = huggingfacehelpers.TextGenerationConfig(generateRandom=True)
 
         for textGenModel in modelsForTextGeneration:
