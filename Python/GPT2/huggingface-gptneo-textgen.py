@@ -39,7 +39,7 @@ def main():
 
 
     # Data Location (format appopriate for OS)
-    textGenCsv = r"Data\TextGeneratedFromModels.txt"
+    textGenCsv = r"Data\TextGeneratedFromModels.csv"
 
 
 
