@@ -13,7 +13,7 @@ import time
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Ensure all the CPU threads are being used
-torch.set_num_threads(18)
+torch.set_num_threads(12)
 pyTorchThreads = torch.get_num_threads()
 print("PyTorch number of CPU threads: " + str(pyTorchThreads))
 
@@ -63,7 +63,7 @@ startTime = time.time()
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=50, batch_size=102) 
+args = GENTrainArgs(num_train_epochs=1000, batch_size=1) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)
