@@ -14,10 +14,6 @@ def main():
     # Config Variables
     seed = huggingfacehelpers.random.randint(1, 100000) # Set to static value instead of RNG for reproducability
     cpuThreads = 12
-    sentencesStartForTextGeneration = ['Statistics can be used to help make decisions.', 'Data science is used in sports.', 'Baseball coaches use statistics for',
-        'Making decisions can be aided by probabilistic approaches.', 'Sports analytics includes using ', 'There are many ways to use statistics in sports.',
-        'Machine intelligence can help the decision making process', 'A decision support system is']
-    numberOfIterations = 5
 
     # Configue CPU/GPU Compute for process
     deviceId = huggingfacehelpers.configure_compute("cpu")
@@ -31,7 +27,7 @@ def main():
     textGenerationConfig = huggingfacehelpers.TextGenerationConfig()
 
     # Set this to 1 if running in VSCode, external terminal can be higher
-    args = GENEvalArgs(preprocessing_processes=1, mlm_probability=0.9)
+    args = GENEvalArgs(preprocessing_processes=1, mlm_probability=0.2, batch_size=100)
 
     ########################
     ## EVALUATION         ##
@@ -55,7 +51,7 @@ def main():
     # resultGenericGPTNeo13B = happy_gen.eval(evalData, args=args)
 
     happy_gen = HappyGeneration("GPT-NEO", "EleutherAI/gpt-neo-2.7B")  
-    resultGenericGPTNeo27B = happy_gen.eval(huggingfacehelpers.evalData, args=args)
+    resultGenericGPTNeo27B = happy_gen.eval(textGenerationConfig.evalData, args=args)
 
     ## Fine-tuned models
 
@@ -121,7 +117,7 @@ def main():
         fineTunedModelLocation = fineTunedModelLocation + baseModelArchitecture
 
     happy_gen = HappyGeneration(model_type="GPT-NEO", model_name=fineTunedModelLocation) 
-    resultGPTNeo27B = happy_gen.eval(huggingfacehelpers.evalData, args=args)
+    resultGPTNeo27B = happy_gen.eval(textGenerationConfig.evalData, args=args)
 
     ########################
     ## RESULTS            ##
