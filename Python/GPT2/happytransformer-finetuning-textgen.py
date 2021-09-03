@@ -10,20 +10,12 @@ import torch
 import os
 import time
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Ensure all the CPU threads are being used
-#torch.set_num_threads(18)
+torch.set_num_threads(12)
 pyTorchThreads = torch.get_num_threads()
 print("PyTorch number of CPU threads: " + str(pyTorchThreads))
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-print("Model Device Type: " + device)
-
-# t = torch.cuda.get_device_properties(0).total_memory
-# r = torch.cuda.memory_reserved(0)
-# a = torch.cuda.memory_allocated(0)
-# f = r-a  # free inside reserved
-# print(r)
 
 # happy_gen = HappyGeneration("GPT2", "gpt2-xl")  # Best performance 
 
@@ -45,10 +37,10 @@ torch.manual_seed(255)
 
 baseModelType = "GPT2"
 
-#baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
-baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
+baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
+#baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
 #baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
-#baseModelArchitecture = "gpt2"
+#baseModelArchitecture = "gpt2-xl"
 
 fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
 
@@ -71,7 +63,7 @@ startTime = time.time()
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=1000, batch_size=1)
+args = GENTrainArgs(num_train_epochs=1000, batch_size=1) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)
@@ -81,9 +73,7 @@ happy_gen.save(fineTunedModelLocation)
 
 # Print elapsed time
 timeElapsed = round(time.time() - startTime, 2)
-print("*********************************")
-print("Time elapsed fine-tuning model: " + str(timeElapsed))
-print("*********************************")
+print("Time elapsed fine-tuning model: ", timeElapsed)
 
 # ##########################
 # ## TEST THE TUNED MODEL ##
