@@ -8,6 +8,7 @@
 from happytransformer import HappyGeneration, GENSettings, GENTrainArgs
 import torch
 import os
+import time
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
@@ -36,9 +37,9 @@ torch.manual_seed(255)
 
 baseModelType = "GPT2"
 
-#baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
+baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
 #baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
-baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
+#baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
 #baseModelArchitecture = "gpt2-xl"
 
 fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
@@ -56,12 +57,13 @@ else :
     fineTunedModelLocation = fineTunedModelLocation + "-" + baseModelArchitecture
     baseModelType = "GPT2"
 
+startTime = time.time()
 
 # Load model type and the architecture/pre-trained model
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=75, batch_size=102) 
+args = GENTrainArgs(num_train_epochs=50, batch_size=102) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)
@@ -69,6 +71,9 @@ happy_gen.train(r"Data\statisticslines.txt", args=args)
 # # Save the model
 happy_gen.save(fineTunedModelLocation)
 
+# Print elapsed time
+timeElapsed = round(time.time() - startTime, 2)
+print("Time elapsed fine-tuning model: ", timeElapsed)
 
 # ##########################
 # ## TEST THE TUNED MODEL ##
