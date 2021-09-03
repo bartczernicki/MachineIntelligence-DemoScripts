@@ -19,11 +19,11 @@ print("PyTorch number of CPU threads: " + str(pyTorchThreads))
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print("Model Device Type: " + device)
 
-t = torch.cuda.get_device_properties(0).total_memory
-r = torch.cuda.memory_reserved(0)
-a = torch.cuda.memory_allocated(0)
-f = r-a  # free inside reserved
-print(f)
+# t = torch.cuda.get_device_properties(0).total_memory
+# r = torch.cuda.memory_reserved(0)
+# a = torch.cuda.memory_allocated(0)
+# f = r-a  # free inside reserved
+# print(r)
 
 # happy_gen = HappyGeneration("GPT2", "gpt2-xl")  # Best performance 
 
@@ -46,9 +46,9 @@ torch.manual_seed(255)
 baseModelType = "GPT2"
 
 #baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
-#baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
+baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
 #baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
-baseModelArchitecture = "gpt2"
+#baseModelArchitecture = "gpt2"
 
 fineTunedModelLocation = r"Models\HappyTransformer-FineTuning-TextGen"
 
