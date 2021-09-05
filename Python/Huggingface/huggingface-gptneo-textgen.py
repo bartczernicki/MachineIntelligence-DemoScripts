@@ -37,6 +37,7 @@ def main():
 
     fineTunedModelLocation = huggingfacehelpers.get_finetuned_model_location(textGenerationConfig.baseModelArchitecture, fineTunedModelLocationBasePath)
     modelsForTextGeneration = []
+    # Add both fine-tuned model and the baseline (generic model)
     modelsForTextGeneration.append(fineTunedModelLocation)
     modelsForTextGeneration.append(textGenerationConfig.baseModelArchitecture)
 
@@ -114,7 +115,8 @@ def main():
                     input_ids = tokenizer.encode(sentenceStart, return_tensors='pt')
                     input_ids_OnDevice = input_ids.to(deviceName)
 
-                    generatorResults = model.generate(input_ids_OnDevice, 
+                    generatorResultsTokens = model.generate(input_ids_OnDevice,
+                        return_full_text=False,
                         clean_up_tokenization_spaces = textGenerationConfig.clean_up_tokenization_spaces,
                         do_sample=textGenerationConfig.do_sample,
                         min_length=textGenerationConfig.min_length,
@@ -129,6 +131,12 @@ def main():
                     # Print elapsed time
                     timeElapsed = round(time.time() - startTime, 2)
                     print("Time elapsed generating text: ", timeElapsed)
+
+                    # Decode the tokens into sentences
+                    generatorResults = []
+                    for generatedToken in generatorResultsTokens:
+                        sentence = tokenizer.decode(generatedToken, skip_special_tokens=True)
+                        generatorResults.append(sentence)
 
                     # Write text generated to CSV
                     huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, timeElapsed, seed,

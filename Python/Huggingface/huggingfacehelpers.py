@@ -59,7 +59,8 @@ def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation
             listToWrite.append("Seed=" + str(seed))
             listToWrite.append("Params=top_k:{}tempature:{}top_p:{}noRepeatNgramSize:{}".format(topK, temperature, topProbabilities, noRepeatNgramSize))
             # Access dictionary items
-            stringToWrite = str(textGenResult).replace(r"\n\n", " ")
+            stringPostProcessed = str(textGenResult).replace(r"\n\n", " ").replace(r"\n", " ").replace('\n', ' ').replace(r'\r','').replace('\r', '')
+            stringToWrite = ' '.join(stringPostProcessed.splitlines())
             listToWrite.append(stringToWrite)
 
             # write the row
