@@ -1,3 +1,3 @@
 # MachineIntelligence-DemoScripts
 
-Scripts (Python, R) for Machine Intelligence (AI, ML, Statistics, Natural Language etc.) for demos and POCs 
+Scripts (Python, R) & Data for Machine Intelligence (AI, ML, Statistics, Natural Language etc.) for various demos and POCs 
