@@ -4,9 +4,9 @@ import deepspeed
 import torch
 
 #baseModelArchitecture = "gpt2" 
-baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
+#baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
 #baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
-#baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
+baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print("GPT2 Model Device Type: " + device)
@@ -19,6 +19,7 @@ textGenerationConfig = huggingfacehelpers.TextGenerationConfig()
 fineTunedModelLocationBasePath = r"Models\HappyTransformer-FineTuning-TextGen"
 
 fineTunedModelLocation = huggingfacehelpers.get_finetuned_model_location(baseModelArchitecture, fineTunedModelLocationBasePath)
+fineTunedModelLocation = baseModelArchitecture
 print(fineTunedModelLocation)
 # Sentence to start text-generation
 sentenceStart = 'You should learn statistics'
@@ -34,13 +35,14 @@ tokenizer = GPT2Tokenizer.from_pretrained(fineTunedModelLocation)
 model = GPTNeoForCausalLM.from_pretrained(fineTunedModelLocation, pad_token_id=tokenizer.eos_token_id)
 model.half().to(device)
 
-ds_engine = deepspeed.init_inference(model,
-                                 mp_size=2,
-                                 dtype=torch.half,
-                                 checkpoint=None,
-                                 replace_method='auto')
+# ds_engine = deepspeed.init_inference(model,
+#                                  mp_size=2,
+#                                  dtype=torch.half,
+#                                  checkpoint=None,
+#                                  replace_method='auto')
 
 # Encode context the generation is conditioned on, send to proper compute device
+
 input_ids = tokenizer.encode(sentenceStart, return_tensors='pt')
 input_ids_OnDevice = input_ids.to(device)
 
