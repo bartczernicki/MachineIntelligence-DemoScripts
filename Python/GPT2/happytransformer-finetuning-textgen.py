@@ -10,7 +10,7 @@ import torch
 import os
 import time
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Ensure all the CPU threads are being used
 torch.set_num_threads(12)
@@ -37,8 +37,8 @@ torch.manual_seed(255)
 
 baseModelType = "GPT2"
 
-baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
-#baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
+#baseModelArchitecture = "EleutherAI/gpt-neo-125M" # Smaller model
+baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger model
 #baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Larger model
 #baseModelArchitecture = "gpt2-xl"
 
@@ -63,7 +63,7 @@ startTime = time.time()
 happy_gen = HappyGeneration(baseModelType, baseModelArchitecture)
 
 # Set up configuration for the model
-args = GENTrainArgs(num_train_epochs=1000, batch_size=1) 
+args = GENTrainArgs(num_train_epochs=1, batch_size=1) 
 
 # # Traid the model
 happy_gen.train(r"Data\statisticslines.txt", args=args)
