@@ -38,7 +38,7 @@ def main():
     fineTunedModelLocation = huggingfacehelpers.get_finetuned_model_location(textGenerationConfig.baseModelArchitecture, fineTunedModelLocationBasePath)
     modelsForTextGeneration = []
     # Add both fine-tuned model and the baseline (generic model)
-    modelsForTextGeneration.append(fineTunedModelLocation)
+    # modelsForTextGeneration.append(fineTunedModelLocation)
     modelsForTextGeneration.append(textGenerationConfig.baseModelArchitecture)
 
 
@@ -110,11 +110,11 @@ def main():
                 huggingfacehelpers.print_NVIDIA_GPU_memory()
 
                 # Load the tokenizer once from persisted storage location once and place it into GPU memory
-                tokenizer = GPT2Tokenizer.from_pretrained(fineTunedModelLocation)
+                tokenizer = GPT2Tokenizer.from_pretrained(textGenModel)
 
                 # Add the EOS token as PAD token to avoid warnings, send to proper compute device
                 # Use FP16 precision vs FP32 to put entire large models into memory
-                model = GPTNeoForCausalLM.from_pretrained(fineTunedModelLocation, pad_token_id=tokenizer.eos_token_id)
+                model = GPTNeoForCausalLM.from_pretrained(textGenModel, pad_token_id=tokenizer.eos_token_id)
                 model.half().to(deviceName)
 
                 for sentenceStart in sentencesStartForTextGeneration:

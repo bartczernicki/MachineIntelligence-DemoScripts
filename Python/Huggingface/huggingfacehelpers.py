@@ -80,8 +80,8 @@ def print_NVIDIA_GPU_memory():
     info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
 
     print("CONFIG - Total GPU memory:", info.total)
-    print("CONFIG - Free GPU memory:", info.free)
-    print("CONFIG - Used GPU memory:", info.used)
+    print("CONFIG - Free GPU memory: ", info.free)
+    print("CONFIG - Used GPU memory: ", info.used)
 
     nvidia_smi.nvmlShutdown()
 
