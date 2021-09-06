@@ -19,7 +19,7 @@ def main():
     sentencesStartForTextGeneration = ['Statistics can be used to help make decisions.', 'Data science is used in sports.', 'Baseball coaches use statistics for',
         'Making decisions can be aided by probabilistic approaches.', 'Sports analytics includes using', 'There are many ways to use statistics in sports.',
         'Machine intelligence can help the decision making process', 'A decision support system is']
-    numberOfIterations = 50
+    numberOfIterations = 25
 
     # Configue CPU/GPU Compute for process
     deviceName = 'cuda' if huggingfacehelpers.torch.cuda.is_available() else 'cpu'
@@ -48,7 +48,8 @@ def main():
     # Calculate amount of iterations configured
     numModels = len(modelsForTextGeneration)
     numSentences = len(sentencesStartForTextGeneration)
-    numTotalIterations = numberOfIterations*numModels*numberOfIterations
+    numTotalIterations = numberOfIterations*numModels*numSentences
+
     print("CONFIG - Total text-gen iterations configured for job: "+ str(numTotalIterations))
 
 
