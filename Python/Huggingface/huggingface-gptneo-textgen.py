@@ -107,6 +107,7 @@ def main():
 
             elif (deviceName == "cuda"):
                 # GPU (CUDA) PIPELINE FOR TEXT GENERATION
+                huggingfacehelpers.print_NVIDIA_GPU_memory()
 
                 # Load the tokenizer once from persisted storage location once and place it into GPU memory
                 tokenizer = GPT2Tokenizer.from_pretrained(fineTunedModelLocation)
