@@ -17,9 +17,9 @@ def main():
     seed = random.randint(1, 100000) # Set to static value instead of RNG for reproducability
     cpuThreads = 6
     sentencesStartForTextGeneration = ['Statistics can be used to help make decisions.', 'Data science is used in sports.', 'Baseball coaches use statistics for',
-        'Making decisions can be aided by probabilistic approaches.', 'Sports analytics includes using ', 'There are many ways to use statistics in sports.',
+        'Making decisions can be aided by probabilistic approaches.', 'Sports analytics includes using', 'There are many ways to use statistics in sports.',
         'Machine intelligence can help the decision making process', 'A decision support system is']
-    numberOfIterations = 5
+    numberOfIterations = 50
 
     # Configue CPU/GPU Compute for process
     deviceName = 'cuda' if huggingfacehelpers.torch.cuda.is_available() else 'cpu'
@@ -45,17 +45,22 @@ def main():
     # Data Location (format appopriate for OS)
     textGenCsv = r"Data\TextGeneratedFromModels.csv"
 
+    # Calculate amount of iterations configured
+    numModels = len(modelsForTextGeneration)
+    numSentences = len(sentencesStartForTextGeneration)
+    numTotalIterations = numberOfIterations*numModels*numberOfIterations
+    print("CONFIG - Total text-gen iterations configured for job: "+ str(numTotalIterations))
 
 
     ################################
     ## TEXT GENARATION            ##
     ################################
 
+    currentIterationOfTotalIterations = 1
     for iteration in range(numberOfIterations):
 
         # Get text generation config (random text-gen parameters)
         textGenerationConfig = huggingfacehelpers.TextGenerationConfig(generateRandom=True)
-
 
         for textGenModel in modelsForTextGeneration:
 
@@ -67,7 +72,9 @@ def main():
 
 
                 for sentenceStart in sentencesStartForTextGeneration:
-                    print("Performing text generation using: {}. Sentence: {}".format(textGenModel, sentenceStart))
+                    print("Performing text generation [{} of {}] using: {}. Sentence: {}".format(currentIterationOfTotalIterations, numTotalIterations, textGenModel, sentenceStart))
+                    # Increment iteration count
+                    currentIterationOfTotalIterations = currentIterationOfTotalIterations + 1
                     startTime = time.time()
 
                     # Generate text on (generic) pre-trained model
@@ -89,7 +96,7 @@ def main():
                     print("Time elapsed generating text: ", timeElapsed)
 
                     #Write text generated to CSV
-                    huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, timeElapsed, seed,
+                    huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, "fp32", timeElapsed, seed,
                         textGenerationConfig.top_k, textGenerationConfig.temperature, textGenerationConfig.top_p, textGenerationConfig.no_repeat_ngram_size)
 
                     # Debug Iterate over generated results list
@@ -109,7 +116,9 @@ def main():
                 model.half().to(deviceName)
 
                 for sentenceStart in sentencesStartForTextGeneration:
-                    print("Performing text generation using: {}. Sentence: {}".format(textGenModel, sentenceStart))
+                    print("Performing text generation [{} of {}] using: {}. Sentence: {}".format(currentIterationOfTotalIterations, numTotalIterations, textGenModel, sentenceStart))
+                    # Increment iteration count
+                    currentIterationOfTotalIterations = currentIterationOfTotalIterations + 1
                     startTime = time.time()
 
                     input_ids = tokenizer.encode(sentenceStart, return_tensors='pt')
@@ -139,7 +148,7 @@ def main():
                         generatorResults.append(sentence)
 
                     # Write text generated to CSV
-                    huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, timeElapsed, seed,
+                    huggingfacehelpers.write_csv_textgenerated(textGenCsv, generatorResults, textGenModel, "fp16", timeElapsed, seed,
                         textGenerationConfig.top_k, textGenerationConfig.temperature, textGenerationConfig.top_p, textGenerationConfig.no_repeat_ngram_size)
 
 # Main entry method

@@ -45,7 +45,7 @@ def get_finetuned_model_location(baseModelArchitecture, fineTunedModelLocationBa
     print("CONFIG - Fine-Tuned Model Location Path: " + str(modelLocationPath))
     return modelLocationPath
 
-def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation, timeElapsed, seed, topK, temperature, topProbabilities, noRepeatNgramSize):
+def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation, modelPrecision, timeElapsed, seed, topK, temperature, topProbabilities, noRepeatNgramSize):
 
     with open(textGenCsv, 'a', encoding='UTF8', newline='') as csvfile: 
         # creating a csv dict writer object 
@@ -55,13 +55,17 @@ def write_csv_textgenerated(textGenCsv, generatorResults, fineTunedModelLocation
         for i, textGenResult in enumerate(generatorResults) :
             listToWrite = []
             listToWrite.append("Model=" + fineTunedModelLocation)
+            listToWrite.append("ModelPrecision=" + modelPrecision)
             listToWrite.append("TimeElapsed=" + str(timeElapsed))
             listToWrite.append("Seed=" + str(seed))
-            listToWrite.append("Params=top_k:{}tempature:{}top_p:{}noRepeatNgramSize:{}".format(topK, temperature, topProbabilities, noRepeatNgramSize))
+            listToWrite.append("Params=top_k:{}".format(topK))
+            listToWrite.append("Params=temperature:{}".format(temperature))
+            listToWrite.append("Params=topProbabilities:{}".format(topProbabilities))
+            listToWrite.append("Params=noRepeatNgramSize:{}".format(noRepeatNgramSize))
             # Access dictionary items
-            stringPostProcessed = str(textGenResult).replace(r"\n\n", " ").replace(r"\n", " ").replace('\n', ' ').replace(r'\r','').replace('\r', '')
-            stringToWrite = ' '.join(stringPostProcessed.splitlines())
-            listToWrite.append(stringToWrite)
+            stringPostProcessed = str(textGenResult).replace(r"\n\n", " ")   #.replace(r"\n", " ").replace('\n', ' ').replace(r'\r','').replace('\r', '')
+            stringToWrite = ' '.join(stringPostProcessed.splitlines()) # uses Python best practices to merge newlines/carriage returns etc
+            listToWrite.append((stringToWrite).strip('"'))
 
             # write the row
             writer.writerow(listToWrite)
@@ -90,3 +94,4 @@ class TextGenerationConfig:
             self.temperature = 0.4
             self.top_p = 0.86
             self.no_repeat_ngram_size = 4
+
