@@ -6,6 +6,9 @@ import huggingfacehelpers # Custom module helpers
 from transformers import pipeline, GPTNeoForCausalLM, AutoTokenizer, GPT2Tokenizer, GPT2LMHeadModel # Huggingface transformers
 import time
 import random
+import os
+import deepspeed
+from pathlib import Path
 
 def main():
 
@@ -30,7 +33,9 @@ def main():
     # Set random seed & CPU threads
     huggingfacehelpers.set_seed_and_cpu_threads(seed = seed, cpuThreads=cpuThreads)
 
-    # Get model location
+    # Get base solution location
+    dir = Path(__file__).parent.parent.parent
+
     fineTunedModelLocationBasePath = r"Models\HappyTransformer-FineTuning-TextGen"
     # Get text generation config
     textGenerationConfig = huggingfacehelpers.TextGenerationConfig()
@@ -43,7 +48,8 @@ def main():
 
 
     # Data Location (format appopriate for OS)
-    textGenCsv = r"Data\TextGeneratedFromModels.csv"
+    textGenCsv = os.path.join(dir, "Data", "TextGeneratedFromModels.csv")
+    print(textGenCsv)
 
     # Calculate amount of iterations configured
     numModels = len(modelsForTextGeneration)
@@ -103,7 +109,7 @@ def main():
                     # Debug Iterate over generated results list
                     # for listItem in generatorResults:
                     #     # Access dictionary items
-                    #     print(str(listItem['generated_text']).rstrip('\n'))
+                    #     print(str(listItem['generated_text']).rstrip('\n')) 
 
             elif (deviceName == "cuda"):
                 # GPU (CUDA) PIPELINE FOR TEXT GENERATION
@@ -115,7 +121,8 @@ def main():
                 # Add the EOS token as PAD token to avoid warnings, send to proper compute device
                 # Use FP16 precision vs FP32 to put entire large models into memory
                 model = GPTNeoForCausalLM.from_pretrained(textGenModel, pad_token_id=tokenizer.eos_token_id)
-                model.half().to(deviceName)
+                #model.half().to(deviceName)
+                deepspeed.init_inference(model, mp_size=1, dtype=huggingfacehelpers.torch.half, replace_method='auto')
 
                 for sentenceStart in sentencesStartForTextGeneration:
                     print("Performing text generation [{} of {}] using: {}. Sentence: {}".format(currentIterationOfTotalIterations, numTotalIterations, textGenModel, sentenceStart))
