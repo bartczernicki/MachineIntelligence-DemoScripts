@@ -8,6 +8,7 @@ import time
 import random
 import os
 import deepspeed
+import torch
 from pathlib import Path
 
 def main():
@@ -15,6 +16,9 @@ def main():
     ########################
     ## CONFIG             ##
     ########################
+
+    # Set Huggingface Transformers Cache
+    os.environ['TRANSFORMERS_CACHE'] = '/datadrive/cache/'
 
     # Config Variables
     seed = random.randint(1, 100000) # Set to static value instead of RNG for reproducability
@@ -116,13 +120,18 @@ def main():
                 huggingfacehelpers.print_NVIDIA_GPU_memory()
 
                 # Load the tokenizer once from persisted storage location once and place it into GPU memory
-                tokenizer = GPT2Tokenizer.from_pretrained(textGenModel)
+                tokenizer = GPT2Tokenizer.from_pretrained(textGenModel, cache_dir="/datadrive/cache/")
 
                 # Add the EOS token as PAD token to avoid warnings, send to proper compute device
                 # Use FP16 precision vs FP32 to put entire large models into memory
-                model = GPTNeoForCausalLM.from_pretrained(textGenModel, pad_token_id=tokenizer.eos_token_id)
-                #model.half().to(deviceName)
-                deepspeed.init_inference(model, mp_size=1, dtype=huggingfacehelpers.torch.half, replace_method='auto')
+                model = GPTNeoForCausalLM.from_pretrained(textGenModel, pad_token_id=tokenizer.eos_token_id, cache_dir="/datadrive/cache/")
+
+                # DeepSpeed Inference Optimization
+                if (huggingfacehelpers.TextGenerationConfig.use_deepspeed_inference == True):
+                    ds_engine = deepspeed.init_inference(model, mp_size=1, dtype=torch.half, replace_method='auto')
+                    model = ds_engine.module
+                else:
+                    model.half().to(deviceName)
 
                 for sentenceStart in sentencesStartForTextGeneration:
                     print("Performing text generation [{} of {}] using: {}. Sentence: {}".format(currentIterationOfTotalIterations, numTotalIterations, textGenModel, sentenceStart))

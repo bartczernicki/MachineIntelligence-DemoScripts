@@ -88,6 +88,12 @@ def print_NVIDIA_GPU_memory():
 
 class TextGenerationConfig:
 
+    # Static properties
+
+    # Use DeepSpeed for inference
+    use_deepspeed_inference = True
+
+
     def __init__(self, generateRandom = False):
         #self.baseModelArchitecture = "EleutherAI/gpt-neo-1.3B" # Larger GPT-Neo model
         self.baseModelArchitecture = "EleutherAI/gpt-neo-2.7B" # Largest GPT-Neo model

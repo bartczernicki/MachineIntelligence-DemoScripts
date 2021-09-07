@@ -1,1 +1,10 @@
 Models/
+tmp/
+
+*.cpython-39.pyc
+*.pyc
+*/*/*/__pycache__/
+*/*/__pycache__/
+*/__pycache__/
+__pycache__
+Python/Huggingface/__pycache__/huggingfacehelpers.cpython-39.pyc
